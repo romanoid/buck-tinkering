@@ -1,0 +1,12 @@
+java_library(
+    name = "lib",
+    visibility = [
+        'PUBLIC'
+    ],
+    resources = glob(["res/*.txt"]),
+    resources_root = "res",
+    deps = [
+        "//deps-experiment/lib1:lib",
+        "//deps-experiment/lib4:lib",
+    ]
+)

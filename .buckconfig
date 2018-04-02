@@ -1,0 +1,10 @@
+[java]
+  jar_spool_mode = direct_to_jar
+  suggest_dependencies = false
+  skip_checking_missing_deps = true
+  compile_against_abis = true
+
+[intellij]
+  jdk_name = 1.8
+  jdk_type = JavaSDK
+  project_compiler_output_url = build/ij/classesa
