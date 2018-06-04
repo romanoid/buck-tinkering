@@ -1,0 +1,64 @@
+# buck test timing-out-test/... -c test.rule_timeout=5000
+# Building: finished in 0.0 sec (100%) 6/6 jobs, 0 updated
+#   Total time: 0.0 sec
+# Testing... 4.9 sec
+#  - //timing-out-test:test... 4.9 sec (running junit[4.9 sec])
+# Test has timed out!  Here is a trace of what it is currently doing:
+# 54196: Unable to open socket file: target process not responding or HotSpot VM not loaded
+# The -F option can be used when the target process is not responding
+# RESULTS FOR //timing-out-test:test
+# FAIL      5.0s  0 Passed   0 Skipped   1 Failed   you.really.care.about.path.mismatch.TimeOutTest
+# FAILURE you.really.care.about.path.mismatch.TimeOutTest main: test timed out before generating results file
+#
+# TESTS FAILED: 1 FAILURE
+# Failed target: //timing-out-test:test
+# FAIL you.really.care.about.path.mismatch.TimeOutTest
+
+java_test(
+    name = "test",
+    srcs = ["TimeOutTest.java"],
+    source = '8',
+    target = '8',
+    deps = [
+        '//3rdparty:junit',
+        '//3rdparty:hamcrest-core',
+    ]
+)
+
+# Note: I don't have a simple repro, but I see errors looking like this:
+
+# This test have both timed out and is shown as failed as exception.
+# This makes unclear which test in test suite was timed out and any execution results for ran tests are missing.
+
+# Test has timed out!  Here is a trace of what it is currently doing:
+# 2018-06-03 04:08:37
+# Full thread dump OpenJDK 64-Bit Server VM (25.171-b11 mixed mode):
+#
+# <Tread dump here>
+#
+# JNI global references: 756
+#
+# FAIL    <100ms  0 Passed   0 Skipped   1 Failed   //target/target:test_main
+# FAILURE //target/target:test_main main: Command failed with exit code 1.
+#   When running <junit>.
+# com.facebook.buck.step.StepFailedException: Command failed with exit code 1.
+#   When running <junit>.
+#     at com.facebook.buck.step.StepFailedException.createForFailingStepWithException(StepFailedException.java:63)
+#     at com.facebook.buck.step.StepFailedException.createForFailingStepWithExitCode(StepFailedException.java:55)
+#     at com.facebook.buck.step.DefaultStepRunner.runStepForBuildTarget(DefaultStepRunner.java:54)
+#     at com.facebook.buck.cli.TestRunning.lambda$runStepsAndYieldResult$1(TestRunning.java:807)
+#     at com.facebook.buck.util.concurrent.WeightedListeningExecutorService.lambda$submitWithSemaphore$0(WeightedListeningExecutorService.java:78)
+#     at com.google.common.util.concurrent.AbstractTransformFuture$AsyncTransformFuture.doTransform(AbstractTransformFuture.java:211)
+#     at com.google.common.util.concurrent.AbstractTransformFuture$AsyncTransformFuture.doTransform(AbstractTransformFuture.java:200)
+#     at com.google.common.util.concurrent.AbstractTransformFuture.run(AbstractTransformFuture.java:111)
+#     at com.google.common.util.concurrent.MoreExecutors$5$1.run(MoreExecutors.java:992)
+#     at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+#     at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+#     at java.lang.Thread.run(Thread.java:748)
+# Caused by: com.facebook.buck.core.exceptions.HumanReadableException: Command failed with exit code 1.
+#     at com.facebook.buck.step.StepFailedException.createForFailingStepWithExitCode(StepFailedException.java:56)
+#     ... 10 more
+#
+# TESTS FAILED: 1 FAILURE
+# Failed target: //target/target:test_main
+#

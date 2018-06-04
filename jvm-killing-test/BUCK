@@ -1,0 +1,45 @@
+# buck test jvm-killing-test/...
+# FAILURE //jvm-killing-test:test main: Command failed with exit code 1.
+# stderr: 
+#   When running <junit>.
+# Building: finished in 1.3 sec (100%) 6/6 jobs, 6 updated
+#   Total time: 1.3 sec
+# Testing: finished in 0.2 sec (0 PASS/1 FAIL)
+# RESULTS FOR //jvm-killing-test:test
+# FAIL    <100ms  0 Passed   0 Skipped   1 Failed   //jvm-killing-test:test
+# FAILURE //jvm-killing-test:test main: Command failed with exit code 1.
+# stderr: 
+#   When running <junit>.
+# com.facebook.buck.step.StepFailedException: Command failed with exit code 1.
+# stderr: 
+#   When running <junit>.
+#     at com.facebook.buck.step.StepFailedException.createForFailingStepWithException(StepFailedException.java:63)
+#     at com.facebook.buck.step.StepFailedException.createForFailingStepWithExitCode(StepFailedException.java:55)
+#     at com.facebook.buck.step.DefaultStepRunner.runStepForBuildTarget(DefaultStepRunner.java:54)
+#     at com.facebook.buck.cli.TestRunning.lambda$runStepsAndYieldResult$1(TestRunning.java:807)
+#     at com.facebook.buck.util.concurrent.WeightedListeningExecutorService.lambda$submitWithSemaphore$0(WeightedListeningExecutorService.java:78)
+#     at com.google.common.util.concurrent.AbstractTransformFuture$AsyncTransformFuture.doTransform(AbstractTransformFuture.java:211)
+#     at com.google.common.util.concurrent.AbstractTransformFuture$AsyncTransformFuture.doTransform(AbstractTransformFuture.java:200)
+#     at com.google.common.util.concurrent.AbstractTransformFuture.run(AbstractTransformFuture.java:111)
+#     at com.google.common.util.concurrent.MoreExecutors$5$1.run(MoreExecutors.java:992)
+#     at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+#     at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+#     at java.lang.Thread.run(Thread.java:748)
+# Caused by: com.facebook.buck.core.exceptions.HumanReadableException: Command failed with exit code 1.
+# stderr: 
+#     at com.facebook.buck.step.StepFailedException.createForFailingStepWithExitCode(StepFailedException.java:56)
+#     ... 10 more
+# 
+# TESTS FAILED: 1 FAILURE
+# Failed target: //jvm-killing-test:test
+# FAIL //jvm-killing-test:test
+
+
+java_test(
+    name = "test",
+    srcs = ["SystemOutTest.java"],
+    deps = [
+        '//3rdparty:junit',
+        '//3rdparty:hamcrest-core',
+    ]
+)
