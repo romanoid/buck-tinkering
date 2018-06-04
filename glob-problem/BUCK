@@ -1,0 +1,51 @@
+# The difference is missing  `4  02-01-1985 00:00   1/build`
+
+# Note, this is caused by what arguable is misconfiguration and difference between watchman and project excludes.
+# On other hand, Python glob is always a fallback if watchman fails for any reason (as if it crashes or times out).
+# Also sometimes buid is run on machines without watchman, defaulting it to python glob.
+
+
+# $ buck build glob-problem/... -c project.glob_handler=WATCHMAN
+# Building: finished in 0.0 sec (100%) 1/1 jobs, 1 updated
+#   Total time: 0.2 sec
+# $ unzip -l buck-out/gen/glob-problem/lib__lib__output/lib.jar
+# Archive:  buck-out/gen/glob-problem/lib__lib__output/lib.jar
+#   Length      Date    Time    Name
+# ---------  ---------- -----   ----
+#         0  02-01-1985 00:00   META-INF/
+#        25  02-01-1985 00:00   META-INF/MANIFEST.MF
+#         0  02-01-1985 00:00   1/
+#         4  02-01-1985 00:00   1/build
+#         4  02-01-1985 00:00   1/foobar
+#         0  02-01-1985 00:00   build/
+#         4  02-01-1985 00:00   build/barfoo
+# ---------                     -------
+#        37                     7 files
+#
+#
+# $ buck build glob-problem/... -c project.glob_handler=PYTHON
+# Shutting down and restarting buck daemon: The project directory changed between invocations
+# Building: finished in 0.0 sec (100%) 1/1 jobs, 1 updated
+#   Total time: 0.2 sec
+# $ unzip -l buck-out/gen/glob-problem/lib__lib__output/lib.jar
+# Archive:  buck-out/gen/glob-problem/lib__lib__output/lib.jar
+#   Length      Date    Time    Name
+# ---------  ---------- -----   ----
+#         0  02-01-1985 00:00   META-INF/
+#        25  02-01-1985 00:00   META-INF/MANIFEST.MF
+#         0  02-01-1985 00:00   1/
+#         4  02-01-1985 00:00   1/foobar
+#         0  02-01-1985 00:00   build/
+#         4  02-01-1985 00:00   build/barfoo
+# ---------                     -------
+#        33                     6 files
+
+
+java_library(
+    name = "lib",
+    resources = glob(["src/**"]),
+    resources_root = 'src',
+    unbundled_resources_root = 'src',
+)
+
+
